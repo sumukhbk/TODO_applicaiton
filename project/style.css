@@ -3,7 +3,6 @@
   box-sizing: border-box;
 }
 
-/* ---------- Header ---------- */
 .header {
   position: fixed;
   top: 0;
@@ -87,14 +86,13 @@
   background: white;
 }
 
-/* ---------- Left box (does NOT scroll itself) ---------- */
 .left-box {
   position: fixed;
   top: 4.3rem;
   left: 0;
   width: 260px;
   height: calc(100vh - 4.3rem);
-  padding: 1rem 1rem 4.5rem; /* bottom space for the fixed .lbtn */
+  padding: 1rem 1rem 4.5rem;
   color: var(--ice);
 
   display: flex;
@@ -145,10 +143,9 @@
   font-weight: bold;
 }
 
-/* ---------- Only the list scrolls ---------- */
 .sysland {
   flex: 1;
-  min-height: 0; /* required for scrolling inside a flex column */
+  min-height: 0;
   overflow-y: auto;
   list-style: none;
   padding: 0 0.3rem 0 0;
