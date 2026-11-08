@@ -1,3 +1,11 @@
+:root {
+  --navy: #002941;
+  --deep-blue: #0b4565;
+  --coral: #ff7f50;
+  --cream: #fdf3e7;
+  --ice: #f4f9fc;
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
@@ -206,8 +214,8 @@
 
 .del-btn {
   flex-shrink: 0;
-  margin-left: 3.5rem;
-  width: 5rem;
+  margin-left: 7rem;
+
   height: 1.6rem;
   border-radius: 50%;
   font-size: 1.1rem;
@@ -221,6 +229,166 @@
 }
 
 .del-btn:hover {
+  background: var(--coral);
+  color: var(--navy);
+}
+
+.content {
+  margin-left: 260px;
+  height: 100vh;
+  padding: calc(4.3rem + 1.5rem) 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-title {
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+  color: var(--navy);
+}
+
+.main-panel {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin-right: 0.5rem;
+  max-width: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  border-radius: 0.8rem;
+  color: var(--ice);
+  background: rgba(0, 41, 65, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mainlist {
+  flex: 1;
+  min-height: 0;
+  margin-right: 0.5rem;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0 0.3rem 0 0;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--coral) transparent;
+}
+
+.mainlist::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mainlist::-webkit-scrollbar-thumb {
+  background: var(--coral);
+  border-radius: 3px;
+}
+
+.mainname {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+  height: 2.8rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.mainname:focus-within {
+  background: var(--cream);
+  border-color: var(--coral);
+}
+
+.mainname input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 0;
+  font-size: 1rem;
+  color: var(--ice);
+  background: transparent;
+}
+
+.mainname input::placeholder {
+  color: rgba(244, 249, 252, 0.7);
+}
+
+.mainname:focus-within input {
+  color: var(--navy);
+}
+
+.mainname:focus-within input::placeholder {
+  color: rgba(0, 41, 65, 0.55);
+}
+
+.mainlist:empty::before {
+  content: "No task yet. Type Below and press Enter";
+  display: block;
+  padding: 1rem 0.3rem;
+  color: rgba(244, 249, 252, 0.6);
+}
+
+.mainlist .task {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition:
+    bacground 0.2s,
+    border-color 0.2s;
+}
+
+.mainlist .task input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--coral);
+  cursor: pointer;
+}
+
+.mainlist .task .task-text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mainlist .task.done .task-text {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.mainlist .task .task-del {
+  flex-shrink: 0;
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--ice);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.mainlist .task .task-del:hover {
   background: var(--coral);
   color: var(--navy);
 }
