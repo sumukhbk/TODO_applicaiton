@@ -10,7 +10,7 @@
     <div class="header">
       <h1 class="htext">
         Personal Notebook
-        <button class="hbtn">Transport Attributes</button>
+        <button class="hbtn" id="attropen">Transport Attributes</button>
       </h1>
     </div>
 
@@ -25,10 +25,10 @@
       <ul class="sysland" id="sys-land"></ul>
     </div>
 
-    <button class="lbtn">Left Button</button>
+    <button class="lbtn">Complete Tasks</button>
 
     <main class="content">
-      <h2 class="content-title">Transport Requests</h2>
+      <h2 class="content-title">Tasks</h2>
 
       <div class="main-panel">
         <ul class="mainlist" id="main-list"></ul>
@@ -43,6 +43,60 @@
         </div>
       </div>
     </main>
+    <dialog class="attr-dialog" id="attrDialog" aria-labelledby="attrTitle">
+      <div class="attr-head">
+        <h3 id="attrTitle">Transport Attributes</h3>
+        <div class="env-tabs" role="group" aria-label="Environment">
+          <button class="env-tab" data-env="production" type="button">
+            Production
+          </button>
+          <button class="env-tab" data-env="quality" type="button">
+            Quality
+          </button>
+          <button class="env-tab" data-env="development" type="button">
+            Development
+          </button>
+        </div>
+        <button
+          class="attr-close"
+          id="attrclose"
+          type="button"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="attr-body">
+        <!-- left pane: like the homepage sidebar -->
+        <aside class="attr-side">
+          <h4 class="sidebar-title">Attributes</h4>
+
+          <div class="systemname">
+            <input type="text" id="attrinput" placeholder="Add attribute..." />
+            <button id="attraddbtn" type="button">+</button>
+          </div>
+
+          <ul class="sysland" id="attr-list"></ul>
+        </aside>
+
+        <!-- right pane: like the homepage main content -->
+        <section class="attr-main">
+          <h4 class="attr-main-title">Transport requests</h4>
+
+          <ul class="mainlist" id="attr-tasks"></ul>
+
+          <div class="mainname">
+            <span class="plus" aria-hidden="true">+</span>
+            <input
+              type="text"
+              id="attrmaininput"
+              placeholder="Add a value and press Enter"
+            />
+          </div>
+        </section>
+      </div>
+    </dialog>
 
     <script src="script.js"></script>
   </body>

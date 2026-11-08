@@ -11,12 +11,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 /* ---------- storage ---------- */
-let db = { systems: [], tasks: [] };
+let db = { systems: [], tasks: [], attributes: [], attritems: [] };
 let writeQueue = Promise.resolve();
 
 async function load() {
   try {
     db = JSON.parse(await fs.readFile(DATA_FILE, "utf8"));
+    db.attributes = db.attributes || [];
+    db.attritems = db.attritems || [];
   } catch (err) {
     if (err.code !== "ENOENT") throw err;
     // first run: start with your three example systems
@@ -26,6 +28,8 @@ async function load() {
         text,
       })),
       tasks: [],
+      attributes: [],
+      attritems: [],
     };
     await save();
   }
@@ -52,9 +56,11 @@ function cleanText(value) {
 }
 
 // open tasks first (in order), completed tasks last (in order completed)
-function sortedTasks() {
-  const open = db.tasks.filter((t) => !t.done).sort((a, b) => a.rank - b.rank);
-  const done = db.tasks
+function sortedTasks(list) {
+  const open = list.tasks
+    .filter((t) => !t.done)
+    .sort((a, b) => a.rank - b.rank);
+  const done = list.tasks
     .filter((t) => t.done)
     .sort((a, b) => a.doneAt - b.doneAt);
   return [...open, ...done];
@@ -94,63 +100,70 @@ app.delete(
 );
 
 /* ---------- tasks (main) ---------- */
-app.get("/api/tasks", (req, res) => res.json(sortedTasks()));
+function taskRoutes(name) {
+  const base = "/api/" + name;
 
-app.post(
-  "/api/tasks",
-  wrap(async (req, res) => {
-    const text = cleanText(req.body.text);
-    if (!text)
-      return res
-        .status(400)
-        .json({ error: "Text is required (max 200 characters)." });
+  app.get(base, (req, res) => res.json(sortedTasks(db[name])));
 
-    const task = {
-      id: randomUUID(),
-      text,
-      done: false,
-      rank: Date.now(),
-      doneAt: null,
-    };
-    db.tasks.push(task);
-    await save();
-    res.status(201).json(task);
-  }),
-);
+  app.post(
+    base,
+    wrap(async (req, res) => {
+      const text = cleanText(req.body.text);
+      if (!text)
+        return res
+          .status(400)
+          .json({ error: "Text is required (max 200 characters)." });
 
-app.patch(
-  "/api/tasks/:id",
-  wrap(async (req, res) => {
-    const task = db.tasks.find((t) => t.id === req.params.id);
-    if (!task) return res.status(404).json({ error: "Not found." });
-    if (typeof req.body.done !== "boolean") {
-      return res.status(400).json({ error: "'done' must be true or false." });
-    }
+      const task = {
+        id: randomUUID(),
+        text,
+        done: false,
+        rank: Date.now(),
+        doneAt: null,
+      };
+      db[name].push(task);
+      await save();
+      res.status(201).json(task);
+    }),
+  );
 
-    if (req.body.done && !task.done) {
-      task.done = true;
-      task.doneAt = Date.now(); // goes to the end of the completed group
-    } else if (!req.body.done && task.done) {
-      task.done = false;
-      task.doneAt = null;
-      task.rank = Date.now(); // goes just above the completed tasks
-    }
-    await save();
-    res.json(task);
-  }),
-);
+  app.patch(
+    base + "/:id",
+    wrap(async (req, res) => {
+      const task = db[name].find((t) => t.id === req.params.id);
+      if (!task) return res.status(404).json({ error: "Not found." });
+      if (typeof req.body.done !== "boolean") {
+        return res.status(400).json({ error: "'done' must be true or false." });
+      }
 
-app.delete(
-  "/api/tasks/:id",
-  wrap(async (req, res) => {
-    const before = db.tasks.length;
-    db.tasks = db.tasks.filter((t) => t.id !== req.params.id);
-    if (db.tasks.length === before)
-      return res.status(404).json({ error: "Not found." });
-    await save();
-    res.status(204).end();
-  }),
-);
+      if (req.body.done && !task.done) {
+        task.done = true;
+        task.doneAt = Date.now();
+      } else if (!req.body.done && task.done) {
+        task.done = false;
+        task.doneAt = null;
+        task.rank = Date.now();
+      }
+      await save();
+      res.json(task);
+    }),
+  );
+
+  app.delete(
+    base + "/:id",
+    wrap(async (req, res) => {
+      const before = db[name].length;
+      db[name] = db[name].filter((t) => t.id !== req.params.id);
+      if (db[name].length === before)
+        return res.status(404).json({ error: "Not found." });
+      await save();
+      res.status(204).end();
+    }),
+  );
+}
+
+taskRoutes("tasks");
+taskRoutes("attritems");
 
 /* ---------- errors + start ---------- */
 app.use((err, req, res, next) => {

@@ -105,9 +105,9 @@ function createTask(task) {
   return li;
 }
 
-async function setupTasks() {
-  const input = document.getElementById("maininput");
-  const list = document.getElementById("main-list");
+async function setupTasks(base, inputId, listId) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
 
   // completed tasks always sit at the bottom
   function placeTask(taskEl, done) {
@@ -179,5 +179,69 @@ async function setupTasks() {
   });
 }
 
+async function setupAttributes() {
+  const dialog = document.getElementById("attrDialog");
+  const input = document.getElementById("attrinput");
+  const list = document.getElementById("attr-list");
+
+  try {
+    const attrs = await api("/api/attributes");
+    attrs.forEach((a) => list.appendChild(createItem(a)));
+  } catch {
+    showError();
+  }
+
+  // open / close
+  document.getElementById("attropen").addEventListener("click", () => {
+    dialog.showModal();
+    input.focus();
+  });
+  document
+    .getElementById("attrclose")
+    .addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close(); // click on the dark area outside
+  });
+
+  async function addAttr() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+
+    try {
+      const attr = await api("/api/attributes", {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+      list.appendChild(createItem(attr));
+      list.scrollTop = list.scrollHeight;
+      input.focus();
+    } catch {
+      input.value = text;
+      showError();
+    }
+  }
+
+  document.getElementById("attraddbtn").addEventListener("click", addAttr);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.isComposing) addAttr();
+  });
+
+  list.addEventListener("click", async (e) => {
+    if (!e.target.classList.contains("del-btn")) return;
+    const li = e.target.closest("li");
+    try {
+      await api("/api/attributes/" + li.dataset.id, { method: "DELETE" });
+      li.remove();
+    } catch {
+      showError();
+    }
+  });
+
+  // right pane: checkbox list, same code as the homepage tasks
+  setupTasks("/api/attritems", "attrmaininput", "attr-tasks");
+}
+
 setupSidebar();
-setupTasks();
+setupTasks("/api/tasks", "maininput", "main-list");
+setupAttributes();

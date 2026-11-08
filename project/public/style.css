@@ -536,3 +536,160 @@ input[type="checkbox"]:focus-visible {
     transition: none !important;
   }
 }
+
+.attr-dialog {
+  margin: auto;
+  width: auto;
+  height: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--ice);
+  border: 1px solid var(--edge);
+  border-radius: 1.2rem;
+  background: var(--glass), rgba(0, 41, 65, 0.7);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  box-shadow:
+    var(--shine),
+    0 20px 60px rgba(0, 20, 40, 0.5);
+}
+
+/* flex only while open, or the dialog would always be visible */
+.attr-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.attr-dialog::backdrop {
+  background: rgba(0, 20, 40, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.attr-head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.attr-head h3 {
+  text-shadow: 0 1px 6px rgba(0, 20, 40, 0.45);
+}
+
+.attr-close {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--ice);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.attr-close:hover {
+  background: var(--coral);
+  color: var(--navy);
+}
+
+/* two panes side by side */
+.attr-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.attr-side {
+  width: 250px;
+  flex-shrink: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.attr-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.2rem;
+}
+
+.attr-main-title {
+  flex-shrink: 0;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 1px 6px rgba(0, 20, 40, 0.45);
+}
+
+.attr-side .sysland:empty::before {
+  content: "No attributes yet.";
+  display: block;
+  padding: 0.5rem 0.3rem;
+  color: rgba(244, 249, 252, 0.6);
+}
+
+/* small screens: stack the panes */
+@media (max-width: 600px) {
+  .attr-body {
+    flex-direction: column;
+  }
+  .attr-side {
+    width: auto;
+    max-height: 40%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+.env-tabs {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto; /* pushes the tabs to the right, away from the title */
+  margin-right: 1.2rem; /* gap before the close button */
+}
+
+.env-tab {
+  padding: 0.4rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  color: var(--ice);
+  cursor: pointer;
+  background: var(--glass);
+  box-shadow: var(--shine);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    color 0.2s;
+}
+
+@media (max-width: 600px) {
+  .attr-head {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .env-tabs {
+    order: 3; /* tabs drop to their own row under the title */
+    width: 100%;
+    margin: 0;
+  }
+  .env-tab {
+    flex: 1;
+    padding: 0.4rem 0.3rem;
+    font-size: 0.8rem;
+  }
+}
