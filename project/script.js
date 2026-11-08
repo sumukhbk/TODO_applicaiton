@@ -77,8 +77,11 @@ function setupTasks() {
   function addTask() {
     const text = input.value.trim();
     if (!text) return;
-    list.appendChild(createTask(text));
-    list.scrollTop = list.scrollHeight;
+
+    const task = createTask(text);
+    const firstDone = list.querySelector(".task.done");
+    list.insertBefore(task, firstDone);
+    task.scrollIntoView({ block: "nearest" });
     input.value = "";
   }
 
@@ -93,8 +96,16 @@ function setupTasks() {
   });
 
   list.addEventListener("change", (e) => {
-    if (e.target.type === "checkbox") {
-      e.target.closest(".task").classList.toggle("done", e.target.checked);
+    if (e.target.type !== "checkbox") return;
+
+    const task = e.target.closest(".task");
+    task.classList.toggle("done", e.target.checked);
+
+    if (e.target.checked) {
+      list.appendChild(task);
+    } else {
+      const firstDone = list.querySelector(".task.done");
+      list.insertBefore(task, firstDone);
     }
   });
 }
